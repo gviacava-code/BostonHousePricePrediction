@@ -43,6 +43,22 @@ def predict_api():
     # Return the prediction as a JSON response
     return jsonify(ouput[0])
 
+# Define a route for the prediction page of the web app
+# Specify that it only accepts POST requests
+@app.route('/predict', methods=['POST'])
+# Define a function to handle the prediction requests
+def predict():
+    # Get the data from the request form as a list of floats
+    data = [float(x) for x in request.form.values()]
+    # Scale the data using the scaler object and reshape it to have one row and -1 columns
+    final_input = scaler.transform(np.array(data).reshape(1,-1))
+    # Print the scaled data to the console
+    print(final_input)
+    # Make a prediction using the model object and get the first element of the output array
+    output = model.predict(final_input)[0]
+    # Return the rendered HTML template named home.html with the prediction text
+    return render_template('home.html', perdiction_text='>> The house prediction price is {}'.format(output))
+
 # Check if the script is run directly
 if __name__=='__main__':
     # Run the flask app in debug mode
